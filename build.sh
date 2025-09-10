@@ -11,6 +11,11 @@ if [ ! -d "./llama.cpp" ]; then
   cd ..
 fi
 
+# 如果all-MiniLM-L6-v2-Q8_0.gguf不存在，则下载
+if [ ! -e "all-MiniLM-L6-v2-Q8_0.gguf" ]; then
+  wget https://huggingface.co/second-state/All-MiniLM-L6-v2-Embedding-GGUF/resolve/main/all-MiniLM-L6-v2-Q8_0.gguf
+fi
+
 # 源码与构建目录（可通过环境覆盖）
 LLAMACPP_SRDIR="./llama.cpp"
 LIBLLAMA_FILEPATH=`find ${LLAMACPP_SRDIR} -name 'libllama.a'`
@@ -40,4 +45,4 @@ echo "==> LLAMACPP_LIB_DIR=${LLAMACPP_LIB_DIR}"
 echo "==> CGO_CXXFLAGS=${CGO_CXXFLAGS}"
 echo "==> CGO_LDFLAGS=${CGO_LDFLAGS}"
 
-go build -buildvcs=false .
+go build -buildvcs=false ./examples/embedder

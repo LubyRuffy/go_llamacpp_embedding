@@ -1,4 +1,4 @@
-package main
+package go_llamacpp_embedding
 
 /*
 #cgo CXXFLAGS: -std=c++17
@@ -20,9 +20,7 @@ package main
 import "C"
 
 import (
-	"flag"
 	"fmt"
-	"log"
 	"sync"
 	"sync/atomic"
 	"unsafe"
@@ -164,24 +162,4 @@ func NewEmbedder(modelPath string, gpuLayers int) (*Embedder, error) {
 		return nil, fmt.Errorf("当前模型不支持 embedding")
 	}
 	return &Embedder{model: model, context: context, dim: int(dim)}, nil
-}
-
-func main() {
-	modelPath := flag.String("model", "MiniLM-L6-v2.Q8_0.gguf", "GGUF 模型路径")
-	prompt := flag.String("prompt", "hello world", "要生成 embedding 的文本")
-	gpuLayers := flag.Int("gpu-layers", -1, "启用的 GPU 层数，0=CPU，99=尽可能多")
-	flag.Parse()
-
-	embedder, err := NewEmbedder(*modelPath, *gpuLayers)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer embedder.Close()
-
-	// 单文本 embedding
-	out, err := embedder.EmbedTexts([]string{*prompt})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("embedding=%v\n", out)
 }
